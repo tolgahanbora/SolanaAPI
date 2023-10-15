@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
+
 const { Keypair, Connection, PublicKey, Transaction, sendAndConfirmTransaction, SystemProgram } = require('@solana/web3.js');
 
 const app = express();
@@ -17,7 +19,8 @@ app.post('/sendTransaction', async (req, res) => {
     try {
         // Gönderen cüzdan adresi
         // Özel anahtarınızı buraya atayın
-        const secret = [56,155,173,243,127,57,239,251,111,169,191,99,80,42,209,102,32,169,179,21,98,220,214,53,121,85,188,115,230,145,254,16,44,76,162,161,142,1,197,172,13,89,150,133,132,4,11,85,68,241,227,190,175,213,164,111,255,235,199,218,164,212,188,226] // Replace with your secret key
+        const secret = process.env.SECRET_KEY.split(',').map(Number);
+        // Replace with your secret key
 
         const from = Keypair.fromSecretKey(new Uint8Array(secret));
 
@@ -27,7 +30,8 @@ app.post('/sendTransaction', async (req, res) => {
         console.log(from)
         // Transfer miktarı
         const lamports = 1e9; //100000 Örneğin, 0.001 SOL
-        const amountInLamports = float(Number(req.body.amountInLamports)); // body den gelen tutarı kabul etmiyor
+        const amountInLamports = Number(req.body.amountInLamports); // body den gelen tutarı kabul etmiyor
+        console.log("amountInLamports", amountInLamports);
 
 
         console.log(req.body); // Eklenen satır
@@ -37,7 +41,7 @@ app.post('/sendTransaction', async (req, res) => {
             SystemProgram.transfer({
                 fromPubkey: from.publicKey,
                 toPubkey: toWallet,
-                lamports,
+                lamports: lamports * amountInLamports
             })
         );
 
@@ -49,7 +53,7 @@ app.post('/sendTransaction', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('İşlem gönderirken bir hata oluştu');
-    
+
     }
 });
 
