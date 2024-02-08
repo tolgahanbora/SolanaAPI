@@ -11,7 +11,7 @@ const port = 3000;
 app.use(cors());
 
 // Solana bağlantısı oluşturma
-const connection = new Connection('https://api.devnet.solana.com', "confirmed");
+const connection = new Connection('https://api.mainnet-beta.solana.com', "confirmed");
 
 app.use(express.json()); // JSON verileri işlemek için body-parser eklentisini kullanıyoruz.
 
@@ -34,7 +34,7 @@ app.post('/sendTransaction', async (req, res) => {
         console.log("amountInLamports", amountInLamports);
 
 
-        console.log(req.body); // Eklenen satır
+      
 
         // Transfer işlemi oluşturma
         const transaction = new Transaction().add(
